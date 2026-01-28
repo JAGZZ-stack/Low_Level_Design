@@ -14,64 +14,63 @@ Object Oriented Concepts for Low Level Design
 //     -validationProcess()
 //     -paymentProcess()
 
-// 1. Parent Abstract Class
-abstract class PaymentSystem {
-    double amount; // Data field
+// Parent Class
+class PaymentSystem {
+    void validate() {
+        System.out.println("Basic Validation: Checking server status...");
+    }
 
-    // Abstract methods (The "To-Do" list)
-    abstract void validate();
-    abstract void pay();
+    void pay() {
+        System.out.println("Common Action: Processing transaction data...");
+    }
 
-    // Concrete method (Shared logic)
     void generateReceipt() {
-        System.out.println("Receipt: $" + amount + " paid.");
+        System.out.println("Receipt: Transaction successful. Thank you!\n");
     }
 }
 
-// 2. Child Class: Card Payment
+// Child Class 1
 class CardPayment extends PaymentSystem {
-    String cardDetails; // Unique Data
-
-    void validate() {
-        System.out.println("Checking Card: " + cardDetails);
+    void validationProcess() {
+        System.out.println("Card Specific: Validating CVV/Expiry...");
     }
 
-    void pay() {
-        System.out.println("Card Payment of $" + amount + " successful.");
+    void paymentProcess() {
+        System.out.println("Action: Authorizing via Bank Gateway...");
     }
 }
 
-// 3. Child Class: UPI Payment
+// Child Class 2
 class UPIPayment extends PaymentSystem {
-    String upiId; // Unique Data
-
-    void validate() {
-        System.out.println("Checking UPI ID: " + upiId);
+    void validationProcess() {
+        System.out.println("UPI Specific: Verifying UPI ID...");
     }
 
-    void pay() {
-        System.out.println("UPI Payment of $" + amount + " successful.");
+    void paymentProcess() {
+        System.out.println("Action: Sending request to mobile app...");
     }
 }
 
-// Main Execution
+// Main class to run the code
 public class Main {
     public static void main(String[] args) {
-        // --- Process a Card Payment ---
-        CardPayment card = new CardPayment();
-        card.amount = 150.0;           // Assigning data directly
-        card.cardDetails = "4321-8888"; // Unique child data
-        card.validate();
-        card.pay();
-        card.generateReceipt();
-
-        // --- Process a UPI Payment ---
+        // Using UPI Payment
+        System.out.println("--- Starting UPI Payment ---");
         UPIPayment upi = new UPIPayment();
-        upi.amount = 50.0;
-        upi.upiId = "user@upi";
-        upi.validate();
-        upi.pay();
-        upi.generateReceipt();
+        upi.validate();           // Inherited from parent
+        upi.validationProcess();  // Unique to UPI
+        upi.pay();                // Inherited
+        upi.paymentProcess();     // Unique to UPI
+        upi.generateReceipt();    // Inherited
+
+        // Using Card Payment
+        System.out.println("--- Starting Card Payment ---");
+        CardPayment card = new CardPayment();
+        card.validate();          // Inherited
+        card.validationProcess(); // Unique to Card
+        card.pay();               // Inherited
+        card.paymentProcess();    // Unique to Card
+        card.generateReceipt();   // Inherited
     }
 }
 
