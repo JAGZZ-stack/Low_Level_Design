@@ -457,6 +457,9 @@ class PaymentProcessor {
         bank.transferMoney();
     }
 }
+*/
+    
+// The Good Code :
 // 1. The Rule (The Abstraction)
 interface BankRule {
     void transfer();
@@ -479,7 +482,6 @@ class PaymentProcessor {
         anyBank.transfer();
     }
 }
-*/
     
 // Main Execution
 public class Main {
