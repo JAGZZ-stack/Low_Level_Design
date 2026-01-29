@@ -1,395 +1,497 @@
-Object Oriented Concepts for Low Level Design 
-// Inheritance : 
-// -- Child classes are created from the parent class.
-// -- Every Child class will posess all the data and the functions of its parent class and on top of that will have some unique data and unique functions.
+Object Oriented Programming for Low Level Design : 
 
-// Real World Example : 
+Inheritance : 
+-- Child classes are created from the parent class.
+-- Every Child class will posess all the data and the functions of its parent class and on top of that will have some unique data and unique functions.
 
-// PaymentSystem (Parent)
-//     -validate()
-//     -pay()
-//     -generateReceipt()
-
-// CardPayment, UPIPayment, WalletPayment (Child)
-//     -validationProcess()
-//     -paymentProcess()
-
-// Parent Class
+// 1. Parent Class
 class PaymentSystem {
+    double amount = 500.0;
+    
     void validate() {
-        System.out.println("Basic Validation: Checking server status...");
+        System.out.println("Validating payment");
     }
 
     void pay() {
-        System.out.println("Common Action: Processing transaction data...");
-    }
-
-    void generateReceipt() {
-        System.out.println("Receipt: Transaction successful. Thank you!\n");
+        System.out.println("Paying amount");
     }
 }
 
-// Child Class 1
+// 2. Child Class: Card Payment
 class CardPayment extends PaymentSystem {
-    void validationProcess() {
-        System.out.println("Card Specific: Validating CVV/Expiry...");
-    }
+    String cardNumber = "1234-5678-9012";
 
-    void paymentProcess() {
-        System.out.println("Action: Authorizing via Bank Gateway...");
+    void swipeCard() {
+        System.out.println("Card swiped");
     }
 }
 
-// Child Class 2
+// 3. Child Class: UPI Payment
 class UPIPayment extends PaymentSystem {
-    void validationProcess() {
-        System.out.println("UPI Specific: Verifying UPI ID...");
-    }
-
-    void paymentProcess() {
-        System.out.println("Action: Sending request to mobile app...");
+    String upiId = "user@bank";
+    
+    void enterUPIPin() {
+        System.out.println("UPI PIN entered");
     }
 }
 
-// Main class to run the code
+// Main Execution
 public class Main {
     public static void main(String[] args) {
-        // Using UPI Payment
-        System.out.println("--- Starting UPI Payment ---");
-        UPIPayment upi = new UPIPayment();
-        upi.validate();           // Inherited from parent
-        upi.validationProcess();  // Unique to UPI
-        upi.pay();                // Inherited
-        upi.paymentProcess();     // Unique to UPI
-        upi.generateReceipt();    // Inherited
-
-        // Using Card Payment
-        System.out.println("--- Starting Card Payment ---");
         CardPayment card = new CardPayment();
-        card.validate();          // Inherited
-        card.validationProcess(); // Unique to Card
-        card.pay();               // Inherited
-        card.paymentProcess();    // Unique to Card
-        card.generateReceipt();   // Inherited
+        System.out.println(card.amount); 
+        System.out.println(card.cardNumber); 
+        card.validate();     // from PaymentSystem
+        card.pay();          // from PaymentSystem
+        card.swipeCard();    // from CardPayment
+
+        System.out.println("------");
+
+        UPIPayment upi = new UPIPayment();
+        System.out.println(upi.amount); 
+        System.out.println(upi.upiId); 
+        upi.validate();      // from PaymentSystem
+        upi.pay();           // from PaymentSystem
+        upi.enterUPIPin();   // from UPIPayment
     }
 }
 
-// Abstract Classes : 
-// -- Can have common/complete functions as well as abstract/unfinished functions.
-// -- Abstract functions : Same standard, different implementation for every subclass.
-// -- Every child class that inherits this abstract class needs to mandatorily implement its own version of the abstract functions.
+Abstract Classes : 
+-- Can have common/complete functions as well as abstract/unfinished functions.
+-- Abstract functions : Same standard, different implementation for every subclass.
+-- Every child class that inherits this abstract class needs to mandatorily implement its own version of the abstract functions.
 
-// 1. The Abstract Parent
+// 1. Abstract Parent Class (The Blueprint)
 abstract class PaymentSystem {
-    double amount;
+    double amount = 1000.0;
 
-    // Unfinished: Every child MUST finish this
-    abstract void process(); 
-
-    // Finished: Every child uses this as-is
-    void showStatus() {
-        System.out.println("Payment processing...");
+    // A regular function that everyone uses the same way
+    void pay() {
+        System.out.println("Processing payment of: " + amount);
     }
+
+    // An abstract function (The "Blank" that must be filled by child classes)
+    abstract void securityCheck();
 }
 
-// 2. Child Class 1
+// 2. Child Class: Card Payment
 class CardPayment extends PaymentSystem {
-    // Implementing the mandatory abstract function
-    void process() {
-        System.out.println("Using Credit Card.");
+    // Filling in the blank for Card
+    void securityCheck() {
+        System.out.println("Asking for OTP for Card security");
     }
 }
 
-// 3. Child Class 2
+// 3. Child Class: UPI Payment
 class UPIPayment extends PaymentSystem {
-    // Implementing the mandatory abstract function
-    void process() {
-        System.out.println("Using UPI Scanner.");
+    // Filling in the blank for UPI
+    void securityCheck() {
+        System.out.println("Scanning QR code for UPI security");
     }
 }
 
-// Execution
-class Main {
+// Main Execution
+public class Main {
     public static void main(String[] args) {
-        CardPayment c = new CardPayment();
-        c.showStatus(); // Uses common function
-        c.process();    // Uses unique implementation
+        // PaymentSystem p = new PaymentSystem(); // This would cause an ERROR! 
+
+        CardPayment card = new CardPayment();
+        card.pay();            // Using the parent's logic
+        card.securityCheck();  // Using its own "filled-in" logic
+
+        System.out.println("------");
+
+        UPIPayment upi = new UPIPayment();
+        upi.pay();             // Using the parent's logic
+        upi.securityCheck();   // Using its own "filled-in" logic
     }
 }
 
-// Interfaces : 
-// -- Interface is a rule book.
-// -- It only has the method declaration
-// -- Any class that implements the interface will have its own implementation of the methods present in the interface.
-// -- Unlike abstract classes, the classes that implement the interface need not have to belong to the same identity.
+Interfaces : 
+-- Interface is a rule book.
+-- It only has the method declaration
+-- Any class that implements the interface will have its own implementation of the methods present in the interface.
+-- Unlike abstract classes, the classes that implement the interface need not have to belong to the same identity.
 
-// 1. The Rule Book (Interface)
-interface Refundable {
-    void refund(); // Just a declaration, no body
+// 1. The Interface (The Rulebook)
+interface Receipt {
+    void showReceipt(); // No code here, just a requirement
 }
 
-// 2. Child Class implementing the interface
-class CardPayment extends PaymentSystem implements Refundable {
-    // Following the 'Refundable' rule
-    public void refund() {
-        System.out.println("Refunding money to Bank Account.");
-    }
-}
-
-// 3. A totally different class also following the same rule
-class GiftVoucher implements Refundable {
-    // Even though it's not a PaymentSystem, it can be Refundable
-    public void refund() {
-        System.out.println("Restoring voucher balance.");
-    }
-}
-
-// Execution
-class Main {
-    public static void main(String[] args) {
-        CardPayment c = new CardPayment();
-        c.refund();
-
-        GiftVoucher g = new GiftVoucher();
-        g.refund();
-    }
-}
-
-// SOLID PRINCIPLES :
-// Single Responsibility Principle (SRP) :
-// What it means: A class should have only one job.
-
-// Why it matters: If a class does too many things, it becomes messy. If you change one part, you might accidentally break another. It’s better to have small, 
-// specialized tools than one giant tool that tries to do everything.
-
-// In our case: The PaymentSystem should only handle the payment logic. It should not worry about saving data to a database or printing fancy receipts. We should 
-// move those extra jobs to their own classes.
-
-// 1. The Payment Specialist (Only handles paying)
-class CardPayment {
-    double amount;
+// 2. Parent Class
+class PaymentSystem {
+    double amount = 2500.0;
     
     void pay() {
-        System.out.println("Paid $" + amount + " using Card.");
+        System.out.println("Payment successful!");
     }
 }
 
-// 2. The Logger Specialist (Only handles printing/logging)
-class PaymentLogger {
-    void printReceipt(double amount) {
-        System.out.println("Receipt: You spent $" + amount);
+// 3. Child Class implementing the Interface
+class CardPayment extends PaymentSystem implements Receipt {
+    // We MUST write this code because we signed the 'Receipt' contract
+    public void showReceipt() {
+        System.out.println("Receipt: Paid " + amount + " using Credit Card");
     }
 }
 
-// 3. The Database Specialist (Only handles saving data)
-class PaymentRepository {
-    void saveToHistory() {
-        System.out.println("Payment saved to the database.");
+// 4. Another Child Class implementing the Interface
+class UPIPayment extends PaymentSystem implements Receipt {
+    // We MUST write this code here too
+    public void showReceipt() {
+        System.out.println("Receipt: Paid " + amount + " via UPI ID");
     }
 }
 
-// Execution
-class Main {
+// Main Execution
+public class Main {
     public static void main(String[] args) {
-        // We use three simple tools instead of one giant one
         CardPayment card = new CardPayment();
-        card.amount = 200.0;
-        
-        PaymentLogger logger = new PaymentLogger();
-        PaymentRepository repo = new PaymentRepository();
-        
         card.pay();
-        logger.printReceipt(card.amount);
-        repo.saveToHistory();
-    }
-}
+        card.showReceipt();
 
-// Open-Closed Principle (OCP) :
-// What it means: Software should be open for extension, but closed for modification.
+        System.out.println("------");
 
-// The easy explanation: Once you have a piece of code that works, you should not have to open it up and change the original code just to add a new feature. Instead, 
-// you should be able to add new features by simply adding new code.
-
-// In our case: If we want to add a "Crypto Payment" option, we should not have to go back and edit our main PaymentSystem logic or add a bunch of "if-else" statements 
-// to our existing classes. We just create a new class and plug it in.
-
-// 1. The Parent (Open for extension)
-abstract class PaymentSystem {
-    double amount;
-    abstract void process();
-}
-
-// 2. Existing functionality
-class CardPayment extends PaymentSystem {
-    void process() {
-        System.out.println("Processing Card Payment of $" + amount);
-    }
-}
-
-// 3. Adding a NEW feature (We didn't change the classes above!)
-class CryptoPayment extends PaymentSystem {
-    void process() {
-        System.out.println("Processing Crypto Payment of $" + amount);
-    }
-}
-
-// Execution
-class Main {
-    public static void main(String[] args) {
-        // We can add Crypto without ever touching the CardPayment code
-        CryptoPayment crypto = new CryptoPayment();
-        crypto.amount = 500.0;
-        crypto.process();
-    }
-}
-
-// Liskov Substitution Principle (LSP) :
-// What it means: A child class should be able to replace its parent class without breaking anything.
-
-// The easy explanation: If you have a general "Payment" tool, any specific payment (Card, UPI, etc.) should be able to do everything the general tool promised. 
-// You shouldn't have a child class that "breaks the rules" or throws an error when it's asked to do something the parent is supposed to do.
-
-// In our case: Imagine a FixedAmountPayment (like a subscription). If the parent class allows users to changeAmount(), but the child class blocks it or crashes because 
-// the amount is fixed, you’ve broken the principle. The child should always be a perfect substitute for the parent.
-
-// 1. The Parent (Promises a way to pay)
-abstract class PaymentSystem {
-    double amount;
-    abstract void pay();
-}
-
-// 2. Good Child: CardPayment behaves exactly as expected
-class CardPayment extends PaymentSystem {
-    void pay() {
-        System.out.println("Card payment of $" + amount + " successful.");
-    }
-}
-
-// 3. Good Child: UPIPayment also behaves as expected
-class UPIPayment extends PaymentSystem {
-    void pay() {
-        System.out.println("UPI payment of $" + amount + " successful.");
-    }
-}
-
-// Execution
-class Main {
-    public static void main(String[] args) {
-        // We can treat any child as a PaymentSystem and it works perfectly!
-        PaymentSystem p;
-
-        p = new CardPayment();
-        p.amount = 100;
-        p.pay(); // Works!
-
-        p = new UPIPayment();
-        p.amount = 200;
-        p.pay(); // Works!
-    }
-}
-
-// Interface Segregation Principle (ISP) :
-// What it means: Do not force a class to follow rules it does not need.
-
-// The easy explanation: Imagine a remote control with 100 buttons, but your TV only needs 3 (Power, Volume, Channel). It’s annoying to have all those extra buttons in 
-// your way. Instead of one giant "Super Rule Book" that covers everything, it's better to have several small, specific "Mini Rule Books." This way, a class only picks the rules it actually uses.
-
-// In our case: Not every payment needs to be "Refundable" or needs a "Scanner." If we put refund() and scanQR() in one big list, a Card Payment would be forced to have 
-// a scanQR() function even though cards don't use QR codes. We should split them up!
-
-// 1. Specific Mini Rule Books (Small Interfaces)
-interface Refundable {
-    void processRefund();
-}
-
-interface QRScanner {
-    void scanCode();
-}
-
-// 2. Card Payment only needs the Refund rule
-class CardPayment implements Refundable {
-    void processRefund() {
-        System.out.println("Money sent back to card.");
-    }
-}
-
-// 3. UPI Payment needs both Refund AND QR Scanning
-class UPIPayment implements Refundable, QRScanner {
-    void processRefund() {
-        System.out.println("Money sent back to UPI ID.");
-    }
-    
-    void scanCode() {
-        System.out.println("Scanning QR Code...");
-    }
-}
-
-// Execution
-class Main {
-    public static void main(String[] args) {
-        CardPayment card = new CardPayment();
-        card.processRefund(); // Card only does what it's supposed to
-        
         UPIPayment upi = new UPIPayment();
-        upi.scanCode();
-        upi.processRefund();
+        upi.pay();
+        upi.showReceipt();
     }
 }
 
-// Dependency Inversion Principle :
-// "The Big Boss shouldn't be forced to learn how every specific Worker does their job. Instead, the Worker should just follow the Boss's standard rules."
+Solid Principles :
+Single Responsibility Principle (SRP) :
+What it means: A class should have only one job.
 
-// Easy Explanation
-// -- Imagine you are building a Checkout System (the Big Boss).
+Why it matters: If a class does too many things, it becomes messy. If you change one part, you might accidentally break another. It’s better to have small, specialized tools than one giant tool that tries to do everything.
 
-// -- The Wrong Way: The Checkout has to learn exactly how Credit Cards work, then learn exactly how UPI works, then learn exactly how Cash works. If you add a new payment 
-// type, you have to "retrain" the Boss's brain.
+// THE BAD CODE: Everything is jammed into one class
+/*
+class PaymentSystem {
+    double amount = 500.0;
 
-// -- The Dependency Inversion Way: The Boss creates a standard rule book (like an Interface). He says, "I don't care who you are; if you want to work here, you just need 
-// to know how to processPayment()."
+    // Job 1: Processing the money
+    void processPayment() {
+        System.out.println("Processing payment of $" + amount);
+    }
 
-// -- Now, the Boss stays simple, and the specific payment methods (the Workers) are the ones who have to adapt to the Boss's rules.
+    // Job 2: Saving to history (Logging)
+    void saveToHistory() {
+        System.out.println("History: Transaction saved to database.");
+    }
 
-// 1. The Job Description (The Socket)
-interface PaymentWay {
-    void payNow(double amount);
-}
-
-// 2. The Workers (The Plugs) - They just follow the description
-class Card implements PaymentWay {
-    public void payNow(double amount) {
-        System.out.println("Processing Card: $" + amount);
+    // Job 3: Sending notifications
+    void sendAlert() {
+        System.out.println("Email: Payment notification sent!");
     }
 }
 
-class UPI implements PaymentWay {
-    public void payNow(double amount) {
-        System.out.println("Processing UPI: $" + amount);
-    }
-}
-
-// 3. The Big Boss (The Wall Outlet)
-class Checkout {
-    // The boss only cares about the "Job Description"
-    PaymentWay worker; 
-
-    void completeOrder(double total) {
-        worker.payNow(total); // Boss just gives the order
-    }
-}
-
-// Execution
-class Main {
+// Main Execution
+public class Main {
     public static void main(String[] args) {
-        Checkout shop = new Checkout();
-
-        // We plug in the Card worker
-        shop.worker = new Card();
-        shop.completeOrder(100.0);
-
-        // We "unplug" Card and "plug in" UPI - The Shop code stays the same!
-        shop.worker = new UPI();
-        shop.completeOrder(50.0);
+        PaymentSystem sys = new PaymentSystem();
+        
+        // Everything is tied to this one object
+        sys.processPayment();
+        sys.saveToHistory();
+        sys.sendAlert();
     }
 }
+*/
+
+// THE Good Code (Individual Expert for Individual Task)
+// 1. The Expert in Paying
+class PaymentProcessor {
+    void process(double amount) {
+        System.out.println("Processing payment of $" + amount);
+    }
+}
+
+// 2. The Expert in Printing/Logging
+class Logger {
+    void logTransaction(String status) {
+        System.out.println("History: Transaction was " + status);
+    }
+}
+
+// 3. The Expert in Sending Alerts
+class Notification {
+    void sendEmail() {
+        System.out.println("Email: You just spent money!");
+    }
+}
+
+// Main Execution
+public class Main {
+    public static void main(String[] args) {
+        // We use the experts together
+        PaymentProcessor payment = new PaymentProcessor();
+        Logger logger = new Logger();
+        Notification notify = new Notification();
+
+        // Step 1: Pay
+        payment.process(500.0);
+        
+        // Step 2: Log it
+        logger.logTransaction("SUCCESSFUL");
+        
+        // Step 3: Notify user
+        notify.sendEmail();
+    }
+}
+
+Open-Closed Principle (OCP) :
+What it means: Open For Extension but closed for modification
+
+The easy explanation: Once you have a piece of code that works, you should not have to open it up and change the original code just to add a new feature. Instead, you should be able to add new features by simply adding new code.
+
+/*
+// The Bad Code :
+class PaymentProcessor {
+    void process(String type) {
+        if (type.equals("CreditCard")) {
+            System.out.println("Processing Card...");
+        } else if (type.equals("UPI")) {
+            System.out.println("Processing UPI...");
+        }
+        // What if we add Apple Pay? We have to come back here and change this code!
+    }
+}
+The Risk: By constantly changing this "Master Class," you might accidentally break the Credit Card logic while trying to add Apple Pay.
+*/
+    
+// The Good Code :
+We use an Interface (the rulebook we learned earlier). Now, the main processor does not care how you pay; it just follows the rule. To add a new payment method, you just create a new class. You never touch the old ones!
+    
+// 1. The Rulebook (The "Open" part)
+interface PaymentMethod {
+    void pay();
+}
+
+// 2. Existing method
+class CardPayment implements PaymentMethod {
+    public void pay() {
+        System.out.println("Paid using Card");
+    }
+}
+
+// 3. Adding a NEW method (We don't touch CardPayment at all!)
+class GooglePay implements PaymentMethod {
+    public void pay() {
+        System.out.println("Paid using Google Pay");
+    }
+}
+
+// 4. The Processor (The "Closed" part - it never needs to change)
+class PaymentProcessor {
+    void process(PaymentMethod method) {
+        method.pay(); // It just works for any new method!
+    }
+}
+
+// Main Execution
+public class Main {
+    public static void main(String[] args) {
+        PaymentProcessor processor = new PaymentProcessor();
+
+        // Using Card
+        CardPayment card = new CardPayment();
+        processor.process(card);
+
+        // Using Google Pay (Added without changing the Processor code!)
+        GooglePay gpay = new GooglePay();
+        processor.process(gpay);
+    }
+}
+
+Liskov Substitution Principle (LSP) :
+What it means: A child class should be able to replace its parent class without breaking anything.
+
+The easy explanation: If you have a general "Payment" tool, any specific payment (Card, UPI, etc.) should be able to do everything the general tool promised. You should not have a child class that "breaks the rules" or throws an error when it is asked to do something the parent is supposed to do.
+    
+/*
+The Bad Code :
+class PaymentSystem {
+    void processPayment() {
+        System.out.println("Payment successful");
+    }
+
+    void refund() {
+        System.out.println("Money sent back");
+    }
+}
+
+// This child is "broken" because it can't fulfill the refund promise
+class GiftCardPayment extends PaymentSystem {
+    // Surprise! Gift cards can't do refunds
+    void refund() {
+        // This is a "surprise" error that breaks the system logic
+        System.out.println("ERROR: Gift cards cannot be refunded!");
+    }
+}
+*/
+    
+// The Good Code : 
+// 1. Base Class for everyone
+class PaymentSystem {
+    void processPayment() {
+        System.out.println("Processing...");
+    }
+}
+
+// 2. A special group for payments that allow refunds
+class RefundablePayment extends PaymentSystem {
+    void refund() {
+        System.out.println("Refunding money...");
+    }
+}
+
+// 3. Card can be refunded, so it joins the Refundable group
+class CardPayment extends RefundablePayment {
+    // Works perfectly
+}
+
+// 4. GiftCard only joins the Basic group
+class GiftCardPayment extends PaymentSystem {
+    // No refund function here, so no "surprises" for the system!
+}
+
+// Main Execution
+public class Main {
+    public static void main(String[] args) {
+        // This part of the code ONLY accepts refundable payments
+        RefundablePayment card = new CardPayment();
+        card.refund(); 
+
+        // The system won't even let you try to refund a GiftCard here, 
+        // which prevents the "Break" from happening!
+    }
+}
+
+Interface Segregation Principle (ISP) :
+What it means: Do not force a class to follow rules it does not need.
+
+The easy explanation: 
+Child class should be able to perform all the functions of parent class.
+
+Similarly, classes that implement any interface should be implementing their versions of all the functions in that interface.
+/*
+The Bad Code :
+interface PaymentRules {
+    void pay();
+    void swipeCard();    // Specific to Cards
+    void loginToBank();  // Specific to UPI/NetBanking
+}
+
+class UPIPayment implements PaymentRules {
+    public void pay() { 
+        System.out.println("UPI Payment Done"); 
+    }
+
+    // Problem: UPI doesn't have a card to swipe!
+    public void swipeCard() {
+        // We are forced to write this code even if it does nothing
+        System.out.println("Error: No card for UPI");
+    }
+
+    public void loginToBank() {
+        System.out.println("Logged into Bank App");
+    }
+}
+*/
+
+// The Good Code :
+// 1. Basic Rule for everyone
+interface BasePayment {
+    void pay();
+}
+
+// 2. Specific Rule for Card-based payments
+interface CardFunctions {
+    void swipe();
+}
+
+// 3. Specific Rule for Online-based payments
+interface OnlineFunctions {
+    void login();
+}
+
+// Now, classes only take what they need!
+
+class CardPayment implements BasePayment, CardFunctions {
+    public void pay() { System.out.println("Card Pay"); }
+    public void swipe() { System.out.println("Card Swiped"); }
+    // No login() code needed here!
+}
+
+class UPIPayment implements BasePayment, OnlineFunctions {
+    public void pay() { System.out.println("UPI Pay"); }
+    public void login() { System.out.println("Logged into App"); }
+    // No swipe() code needed here!
+}
+
+Dependency Inversion Principle :
+What it means (The Easy Explanation)
+The Concept:
+
+High-level modules (the "Boss" classes that make big decisions) should not depend on Low-level modules (the "Worker" classes that do specific small tasks).
+
+Both should depend on Abstractions (Interfaces/Rules).
+
+Easy Explanation: Your PaymentProcessor (the Boss) shouldn't be hard-wired to a specific Bank (the Worker). Instead, the Boss should just say, "I need any Bank that follows the 'Transfer' rule."
+
+/*
+The "Bad Way" (Hard-wired) :
+Here, the PaymentProcessor is stuck. It only works with HDFCBank. If you want to switch to ICICIBank, you have to "break" and rewrite the Boss class.
+
+class HDFCBank {
+    void transferMoney() {
+        System.out.println("Money sent via HDFC");
+    }
+}
+
+class PaymentProcessor {
+    // The Boss is "dependent" on a specific worker
+    HDFCBank bank = new HDFCBank(); 
+
+    void pay() {
+        bank.transferMoney();
+    }
+}
+// 1. The Rule (The Abstraction)
+interface BankRule {
+    void transfer();
+}
+
+// 2. The Workers (Low-level)
+class HDFCBank implements BankRule {
+    public void transfer() { System.out.println("Sent via HDFC"); }
+}
+
+class ICICIBank implements BankRule {
+    public void transfer() { System.out.println("Sent via ICICI"); }
+}
+
+// 3. The Boss (High-level)
+class PaymentProcessor {
+    // The Boss doesn't name a specific bank anymore!
+    // He just says: "I need someone who follows BankRule"
+    void pay(BankRule anyBank) {
+        anyBank.transfer();
+    }
+}
+*/
+    
+// Main Execution
+public class Main {
+    public static void main(String[] args) {
+        PaymentProcessor boss = new PaymentProcessor();
+        
+        BankRule worker1 = new HDFCBank();
+        BankRule worker2 = new ICICIBank();
+
+        boss.pay(worker1); // Works with HDFC
+        boss.pay(worker2); // Works with ICICI without changing any code!
+    }
+}
+// Summary of the "Inversion": Instead of the Boss looking down at the Worker and saying "I need you specifically," the Boss looks at a Rule and the Worker looks at the same Rule. They are now both looking at the Interface.
 
